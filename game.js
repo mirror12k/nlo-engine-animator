@@ -4,7 +4,7 @@ var game;
 
 function UserInputService() {
 	Entity.call(this, game);
-	this.add_entity(this.rotation_thing = new RotationThing(-100,-100));
+	this.add_entity(this.rotation_thing = new ScreenEntity(game, -100,-100, 32, 32, game.images.rotate_icon));
 	this.add_entity(this.frame_display = new FrameDisplay(100,30));
 	this.rotation_thing.active = false;
 	this.running_id = 1;
@@ -120,9 +120,9 @@ UserInputService.prototype.reload_all_data = function (data) {
 	}
 }
 
-function SelectedThing(px, py) {
-	ScreenEntity.call(this, game, px, py, 32, 32, game.images.ufo);
-	this.select_image(game.images.ufo);
+function SelectedThing(px, py, image) {
+	ScreenEntity.call(this, game, px, py, 32, 32, image);
+	this.select_image(image);
 }
 SelectedThing.prototype = Object.create(ScreenEntity.prototype);
 SelectedThing.prototype.select_image = function (image) {
@@ -131,10 +131,10 @@ SelectedThing.prototype.select_image = function (image) {
 	this.height = image.height;
 }
 
-function RotationThing(px, py) {
-	ScreenEntity.call(this, game, px, py, 32, 32, game.images.turret);
-}
-RotationThing.prototype = Object.create(ScreenEntity.prototype);
+// function RotationThing(px, py) {
+// 	ScreenEntity.call(this, game, px, py, 32, 32, game.images.rotate_icon);
+// }
+// RotationThing.prototype = Object.create(ScreenEntity.prototype);
 
 function PlacableThing(id, px, py, angle, image_url) {
 	ScreenEntity.call(this, game, px, py, 16, 16, undefined);
@@ -195,10 +195,12 @@ function main () {
 	nlo.load.load_all_assets({
 		images: {
 			ufo: 'assets/img/ufo.png',
-			projectile: 'assets/img/projectile.png',
-			turret: 'assets/img/turret.png',
-			enemy: 'assets/img/enemy.png',
-			enemy2: 'assets/img/enemy2.png',
+
+			body: 'assets/img/body.png',
+			foot: 'assets/img/foot.png',
+			gun: 'assets/img/gun.png',
+			head: 'assets/img/head.png',
+			rotate_icon: 'assets/img/rotate_icon.png',
 		},
 	}, loaded_assets => {
 		game = new GameSystem(canvas, loaded_assets);
@@ -210,7 +212,10 @@ function main () {
 		// game.game_systems.turret_system.add_turret(game, 32,32);
 		// game.game_systems.enemy_system.spawn_enemy(game, 640,64);
 
-		game.add_entity(new SelectedThing(16, 16));
+		game.add_entity(new SelectedThing(50, 50, game.images.head));
+		game.add_entity(new SelectedThing(50, 125, game.images.body));
+		game.add_entity(new SelectedThing(150, 150, game.images.gun));
+		game.add_entity(new SelectedThing(50, 200, game.images.foot));
 		// game.particle_systems.purple_particles = new ParticleEffectSystem(game, { fill_style: '#404', });
 
 		game.run_game(ctx, 60);
